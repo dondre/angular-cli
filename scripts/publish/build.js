@@ -59,8 +59,8 @@ Promise.resolve()
   .then(() => console.log('Creating schema.d.ts...'))
   .then(() => {
     const script = path.join(root, 'scripts/build-schema-dts.js');
-    const input = path.join(root, 'packages/angular-cli/lib/config/schema.json');
-    const output = path.join(root, 'packages/angular-cli/lib/config/schema.d.ts');
+    const input = path.join(root, 'packages/api-cli/lib/config/schema.json');
+    const output = path.join(root, 'packages/api-cli/lib/config/schema.d.ts');
     return npmRun.execSync(`node ${script} ${input} ${output}`);
   })
   .then(() => console.log('Compiling packages...'))
@@ -101,7 +101,7 @@ Promise.resolve()
     return files
       .map((fileName) => path.relative(packagesRoot, fileName))
       .filter((fileName) => {
-        if (/^angular-cli[\\\/]blueprints/.test(fileName)) {
+        if (/^api-cli[\\\/]blueprints/.test(fileName)) {
           return true;
         }
         if (/\.d\.ts$/.test(fileName)) {
@@ -153,7 +153,7 @@ Promise.resolve()
   })
   .then(() => glob(path.join(dist, '**/*.spec.*')))
   .then(specFiles => specFiles.filter(fileName => {
-    return !/[\\\/]angular-cli[\\\/]blueprints/.test(fileName);
+    return !/[\\\/]api-cli[\\\/]blueprints/.test(fileName);
   }))
   .then(specFiles => {
     console.log(`Found ${specFiles.length} spec files...`);

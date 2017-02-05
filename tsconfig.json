@@ -32,6 +32,7 @@
   },
   "exclude": [
     "packages/angular-cli/blueprints/*/files/**/*",
+    "packages/api-cli/blueprints/*/files/**/*",
     "dist/**/*",
     "node_modules/**/*",
     "tmp/**/*"

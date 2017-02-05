@@ -1,5 +1,5 @@
 {
-  "name": "newsapi",
+  "name": "<%= htmlComponentName %>",
   "dependencies": {
     "ajv": "registry:npm/ajv#3.5.0+20160208185606",
     "minimist": "registry:npm/minimist#1.0.0+20160723033700",

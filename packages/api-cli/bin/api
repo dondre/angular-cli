@@ -59,7 +59,7 @@ if (process.env['NG_CLI_PROFILING']) {
 }
 
 
-resolve('angular-cli', { basedir: process.cwd() },
+resolve('api-cli', { basedir: process.cwd() },
   function (error, projectLocalCli) {
     var cli;
     if (error) {
@@ -88,7 +88,7 @@ resolve('angular-cli', { basedir: process.cwd() },
       if (shouldWarn) {
         // eslint-disable no-console
         console.log(yellow(`Your global API CLI version (${globalVersion}) is greater than `
-          + `your local version (${localVersion}). The local Angular CLI version is used.`));
+          + `your local version (${localVersion}). The local API CLI version is used.`));
       }
 
       // No error implies a projectLocalCli, which will load whatever

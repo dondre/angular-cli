@@ -1,10 +1,13 @@
 {
-  "name": "newsapi",
-  "version": "1.0.0",
-  "description": "Broad news API",
-  "main": "index.js",
+  "name": "<%= htmlComponentName %>",
+  "version": "0.0.0",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "init": "npm install && typings install && tsc",
+    "lint": "tslint \"./<%= sourceDir %>/**/*.ts\" --project ./tsconfig.json --type-check",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docker-build": "npm run init && docker build -t <%= htmlComponentName %> .",
+    "docker-run": "docker run -dit --name <%= htmlComponentName %> -p 6100:6100 --net backend <%= htmlComponentName %>",
+    "docker-deploy": "npm run docker-build && docker tag <%= htmlComponentName %> 10.10.10.10:5000/<%= htmlComponentName %> && docker push 10.10.10.10:5000/<%= htmlComponentName %>"
   },
   "author": "",
   "license": "ISC",
@@ -15,6 +18,24 @@
     "json-schema-to-mongoose": "^0.2.2",
     "minimist": "^1.2.0",
     "mongoose": "^4.7.7",
-    "require": "^2.4.20"
+    "require": "^2.4.20",
+    "swagger-ui-express": "^1.0.3",
+    "ts-helpers": "^1.1.1"
+  },
+  "devDependencies": {
+    "@angular/compiler": "^2.4.6",
+    "@angular/core": "^2.4.6",
+    "codelyzer": "^2.0.0-beta.4",
+    "karma": "1.2.0",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-cli": "^1.0.1",
+    "karma-jasmine": "^1.0.2",
+    "karma-remap-istanbul": "^0.2.1",
+    "protractor": "~4.0.13",
+    "rxjs": "^5.1.0",
+    "ts-node": "1.2.1",
+    "tslint": "^4.3.0",
+    "typescript": "~2.0.3",
+    "zone.js": "^0.7.6"
   }
 }
