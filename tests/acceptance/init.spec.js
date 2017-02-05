@@ -67,7 +67,7 @@ describe('Acceptance: ng init', function () {
   }
 
   function confirmGlobBlueprinted(pattern) {
-    var blueprintPath = path.join(root, 'blueprints', 'ng2', 'files');
+    var blueprintPath = path.join(root, 'blueprints', 'api', 'files');
     var actual = pickSync('.', pattern);
     var expected = intersect(pickSync(blueprintPath, pattern), actual);
 

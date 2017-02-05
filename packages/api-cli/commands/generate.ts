@@ -34,7 +34,7 @@ const GenerateCommand = EmberGenerateCommand.extend({
       const blueprintList = fs.readdirSync(path.join(__dirname, '..', 'blueprints'));
       const blueprints = blueprintList
         .filter(bp => bp.indexOf('-test') === -1)
-        .filter(bp => bp !== 'ng2')
+        .filter(bp => bp !== 'api')
         .map(bp => Blueprint.load(path.join(__dirname, '..', 'blueprints', bp)));
 
       let output = '';

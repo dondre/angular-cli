@@ -58,7 +58,7 @@ export default function initRun(commandOptions: any, rawArgs: string[]) {
 
   const blueprintOpts = {
     dryRun: commandOptions.dryRun,
-    blueprint: 'ng2',
+    blueprint: 'api',
     rawName: packageName,
     targetFiles: rawArgs || '',
     rawArgs: rawArgs.toString(),

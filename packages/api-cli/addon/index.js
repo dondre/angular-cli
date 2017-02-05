@@ -5,7 +5,7 @@ const config = require('../models/config');
 const path = require('path');
 
 module.exports = {
-  name: 'ng2',
+  name: 'api',
 
   config: function () {
     this.project.ngConfigObj = this.project.ngConfigObj || config.CliConfig.fromProject();
