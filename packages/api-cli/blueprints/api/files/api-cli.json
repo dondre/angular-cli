@@ -1,0 +1,32 @@
+{
+  "project": {
+    "version": "<%= version %>",
+    "name": "<%= htmlComponentName %>"
+  },
+  "apps": [
+    {
+      "root": "<%= sourceDir %>",
+      "outDir": "dist",
+      "main": "main.ts",
+      "tsconfig": "tsconfig.json",
+      "prefix": "<%= prefix %>",
+      "scripts": [],
+      "environments": {
+        "source": "environments/environment.ts",
+        "dev": "environments/environment.ts",
+        "prod": "environments/environment.prod.ts"
+      }
+    }
+  ],
+  "defaults": {
+    "styleExt": "<%= styleExt %>",
+    "prefixInterfaces": false,
+    "inline": {
+      "style": false,
+      "template": false
+    },
+    "spec": {
+      "endpoint": <%= tests %>
+    }
+  }
+}

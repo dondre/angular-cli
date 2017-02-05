@@ -1,0 +1,11 @@
+{
+  "name": "newsapi",
+  "dependencies": {
+    "ajv": "registry:npm/ajv#3.5.0+20160208185606",
+    "minimist": "registry:npm/minimist#1.0.0+20160723033700",
+    "mongoose": "registry:npm/mongoose#4.3.5+20160628072220"
+  },
+  "globalDependencies": {
+    "node": "registry:dt/node#7.0.0+20170121225502"
+  }
+}
