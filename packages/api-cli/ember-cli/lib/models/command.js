@@ -49,7 +49,7 @@ module.exports = Command;
 function Command() {
   CoreObject.apply(this, arguments);
 
-  this.isWithinProject = this.project.isEmberCLIProject();
+  this.isWithinProject = true; //this.project.isEmberCLIProject();
   this.name = this.name || path.basename(getCallerFile(), '.js');
 
   debug('initialize: name: %s, name: %s', this.name);
@@ -122,7 +122,7 @@ Command.prototype.validateAndRun = function(args) {
 
   if (this.works === 'insideProject' && !this.isWithinProject) {
     return Promise.reject(new SilentError(
-      'You have to be inside an angular-cli project in order to use ' +
+      'You have to be inside an api-cli project in order to use ' +
       'the ' + chalk.green(this.name) + ' command.'
     ));
   }

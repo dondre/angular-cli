@@ -10,3 +10,7 @@ import { <%= classifiedModuleName %>RoutingModule } from './<%= dasherizedModule
   declarations: []
 })
 export class <%= classifiedModuleName %>Module { }
+
+<% .forEach(element => {
+  
+});

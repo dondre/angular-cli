@@ -1,0 +1,24 @@
+{
+  "name": "@api-cli/ast-tools",
+  "version": "1.0.15",
+  "description": "CLI tool for API",
+  "main": "./src/index.js",
+  "keywords": [
+    "api",
+    "cli",
+    "ast",
+    "tool"
+  ],
+  "author": "agna",
+  "license": "MIT",
+  "engines": {
+    "node": ">= 4.1.0",
+    "npm": ">= 3.0.0"
+  },
+  "dependencies": {
+    "@angular/tsc-wrapped": "^0.5.0",
+    "rxjs": "^5.0.1",
+    "denodeify": "^1.2.1",
+    "typescript": "~2.0.3"
+  }
+}

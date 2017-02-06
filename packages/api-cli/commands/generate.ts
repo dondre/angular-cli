@@ -59,6 +59,7 @@ const aliasMap: { [alias: string]: string } = {
   'cl': 'class',
   'c': 'component',
   'd': 'directive',
+  'ep': 'endpoint',
   'e': 'enum',
   'i': 'interface',
   'm': 'module',

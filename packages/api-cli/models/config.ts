@@ -5,7 +5,7 @@ import * as chalk from 'chalk';
 import * as fs from 'fs';
 import * as path from 'path';
 
-export const CLI_CONFIG_FILE_NAME = 'angular-cli.json';
+export const CLI_CONFIG_FILE_NAME = 'api-cli.json';
 
 
 function _findUp(name: string, from: string) {

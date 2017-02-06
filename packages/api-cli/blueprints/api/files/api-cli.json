@@ -9,7 +9,7 @@
       "outDir": "dist",
       "main": "main.ts",
       "tsconfig": "tsconfig.json",
-      "prefix": "<%= prefix %>",
+      "prefix": "",
       "scripts": [],
       "environments": {
         "source": "environments/environment.ts",

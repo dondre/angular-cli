@@ -64,16 +64,16 @@ export let jsonSchema = {
     required: ['title']
 }
 
-export interface IEvent extends Document {}
+export interface I<%= classifiedModuleName %> extends Document {}
 
-export const Event = (config:IMongoSettings) => { 
+export const <%= classifiedModuleName %> = (config:IMongoSettings) => { 
     var instance = Mongo.connect(config);
-    return instance.model('Event', SchemaUtil.jsonToMongo(this.jsonSchema));
+    return instance.model('<%= classifiedModuleName %>', SchemaUtil.jsonToMongo(this.jsonSchema));
 }
 
-class EventRepository extends MongoRepository<any> {
+class <%= classifiedModuleName %>Repository extends MongoRepository<any> {
     constructor(config:IMongoSettings) {
-        super(Event(config));
+        super(<%= classifiedModuleName %>(config));
     }
 }
 
@@ -83,4 +83,4 @@ export let validate = (req, res, next) => {
     next();
 }
 
-export let eventRepository = (config:IMongoSettings) => { return new EventRepository(config); }
+export let <%= classifiedModuleName.toLowerCase() %>Repository = (config:IMongoSettings) => { return new <%= classifiedModuleName %>Repository(config); }

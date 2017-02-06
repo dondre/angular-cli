@@ -1,8 +1,8 @@
 import { IControllerResponse } from './';
-import { IEvent } from '../../models/event';
+import { I<%= classifiedModuleName %> } from '../../models/<%= classifiedModuleName %>';
 import { IDataContext } from '../../dal/context';
 
-export class EventController {
+export class <%= classifiedModuleName %>Controller {
 
     constructor(public context:IDataContext){}
 
@@ -13,7 +13,7 @@ export class EventController {
 
     get = async (req): Promise<IControllerResponse> => {   
         try {
-            this.result.payload = await this.context.events.find({});
+            this.result.payload = await this.context.<%= classifiedModuleName.toLowerCase() %>s.find({});
         } catch(err) {
             this.result.payload = err;
             this.result.statusCode = 500;
@@ -24,7 +24,7 @@ export class EventController {
     getId = async (req):Promise<IControllerResponse> => {
         let query, err;
         try {
-            query = await this.context.events.find({ _id: req.params.id});
+            query = await this.context.<%= classifiedModuleName.toLowerCase() %>s.find({ _id: req.params.id});
             this.result.payload = query[0];
         } catch (err) {
             err = err;
@@ -33,14 +33,14 @@ export class EventController {
         }
         if(!err && (!query || query.length == 0)){
             this.result.statusCode = 205,
-            this.result['payload'] = { message: "Event with id of " + req.params.id + " not found." }
+            this.result['payload'] = { message: "<%= classifiedModuleName %> with id of " + req.params.id + " not found." }
         }
         return this.result;
     }
 
     put = async (req):Promise<IControllerResponse> => {
         try {
-            this.result.payload  = await this.context.events.update(req.params.id, req.body);
+            this.result.payload  = await this.context.<%= classifiedModuleName.toLowerCase() %>s.update(req.params.id, req.body);
         }
         catch (err) {
             this.result.statusCode = 500;
@@ -51,7 +51,7 @@ export class EventController {
 
     post = async (req):Promise<IControllerResponse> => {
         try {
-            this.result.payload = await this.context.events.save(req.body);
+            this.result.payload = await this.context.<%= classifiedModuleName.toLowerCase() %>s.save(req.body);
         } catch(err) {
             this.result.statusCode = 500;
             this.result.payload = err;
@@ -61,7 +61,7 @@ export class EventController {
 
     patch = async (req): Promise<IControllerResponse> => {
         try {
-            this.result.payload = await this.context.events.patch(req.params.id, req.body);
+            this.result.payload = await this.context.<%= classifiedModuleName.toLowerCase() %>s.patch(req.params.id, req.body);
         } catch(err) {
             this.result.statusCode = 500;
             this.result.payload = err;
