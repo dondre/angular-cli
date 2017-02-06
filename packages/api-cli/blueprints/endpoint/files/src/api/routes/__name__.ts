@@ -1,6 +1,6 @@
 import { Controllers } from '../controllers';
 import { IDataContext } from '../../dal/context';
-import { validate } from '../../models/<%= classifiedModuleName %>';
+import { validate } from '../../models/<%= classifiedModuleName.toLowerCase() %>';
 
 export let <%= classifiedModuleName.toLowerCase() %>Routes = (app, context:IDataContext) => {
 

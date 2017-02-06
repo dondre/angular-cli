@@ -1,5 +1,5 @@
 import { IControllerResponse } from './';
-import { I<%= classifiedModuleName %> } from '../../models/<%= classifiedModuleName %>';
+import { I<%= classifiedModuleName %> } from '../../models/<%= classifiedModuleName.toLowerCase() %>';
 import { IDataContext } from '../../dal/context';
 
 export class <%= classifiedModuleName %>Controller {
