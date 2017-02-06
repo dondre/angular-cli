@@ -161,7 +161,6 @@ module.exports = {
     }
     var newValue = data.replace(entryRegex, entryRegex + '\r\n' + entryText + addComma + addReturn + backTabs);
     fs.writeFileSync(filepath, newValue, 'utf-8');
-    console.log('readFileSync complete');
   },
 
   afterInstall: function(options) {
@@ -188,7 +187,7 @@ module.exports = {
     let apiController = options.target + '/src/api/controllers/index.ts';
     this.readWriteSync(apiController,"from '../../dal/context';", "import { "+className+"Controller } from './"+name+"';")
     this.readWriteSync(apiController,"class Controllers {","\tpublic "+className+": "+className+"Controller;")
-    this.readWriteSync(apiController,"constructor(context:IDataContext){","\t\tthis."+className+" = new "+className+"Controller(context);")
+    this.readWriteSync(apiController,"constructor(context:IDataContext) {","\t\tthis."+className+" = new "+className+"Controller(context);")
 
 
     if (!options.skipImport) {

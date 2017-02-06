@@ -127,9 +127,9 @@ Command.prototype.validateAndRun = function(args) {
     ));
   }
 
-  if (this.works === 'outsideProject' && this.isWithinProject) {
+  if (this.works === 'outsideProject' && !this.isWithinProject) {
     return Promise.reject(new SilentError(
-      'You cannot use the ' + chalk.green(this.name) + ' command inside an angular-cli project.'
+      'You cannot use the ' + chalk.green(this.name) + ' command inside an api-cli project.'
     ));
   }
 

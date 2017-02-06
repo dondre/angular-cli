@@ -23,8 +23,6 @@
     "ts-helpers": "^1.1.1"
   },
   "devDependencies": {
-    "@angular/compiler-cli": "^2.3.1",
-    "angular-cli": "<%= version %>",
     "@angular/compiler": "^2.4.6",
     "@angular/core": "^2.4.6",
     "codelyzer": "^2.0.0-beta.4",

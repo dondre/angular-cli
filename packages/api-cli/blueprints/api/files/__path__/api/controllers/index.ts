@@ -3,7 +3,8 @@ import { IDataContext } from '../../dal/context';
 
 export class Controllers {
 
-    constructor(context:IDataContext) { }
+    constructor(context:IDataContext) { 
+    }
 }
 
 export interface IControllerResponse {
