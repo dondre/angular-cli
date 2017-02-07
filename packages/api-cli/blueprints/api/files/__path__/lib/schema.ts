@@ -11,6 +11,19 @@ export class SchemaUtil {
         return new Schema(result);
     }
 
+    static isValidJson(schema) {
+        let error = null;
+        try {
+            if(schema.type == 'object'){
+                let output = this.jsonToMongoObject(schema);
+                new Schema(output);
+            } 
+        } catch (err) {
+            error = err;
+        }
+        return error;
+    }
+
     private static jsonToMongoProperty(schema) {
         let propType = schema.type;
         let tempNode = {}
@@ -89,12 +102,10 @@ export class SchemaUtil {
                         let inner;
                         if(schema.properties[key].items.properties != undefined) {
                             inner = this.jsonToMongoObject(schema.properties[key].items);
-                            //console.log(JSON.stringify(inner))
                             tempNode = { type: [new Schema(inner)] };
                         }
                         else {
                             inner = this.jsonToMongoProperty(schema.properties[key].items);
-                            //console.log(JSON.stringify(inner))
                             tempNode = { type: [inner] };
                         }  
                     break;

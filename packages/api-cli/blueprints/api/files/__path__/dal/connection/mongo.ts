@@ -44,8 +44,8 @@ export class Mongo {
                 connectUrl += auth.user + ':' + auth.password + '@';
         }
 
-        connectUrl += dbSettings.url + ':' + dbSettings.port || '27017' + '/';
-        connectUrl += dbSettings.collection;
+        connectUrl += dbSettings.url + ':' + dbSettings.port || '27017';
+        connectUrl = connectUrl + '/' + dbSettings.collection;
         return connectUrl;
     }
 

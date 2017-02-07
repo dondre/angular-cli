@@ -21,12 +21,12 @@ const GenerateCommand = EmberGenerateCommand.extend({
 
     if (rawArgs[0] !== '--help' &&
       !fs.existsSync(path.join(__dirname, '..', 'blueprints', rawArgs[0]))) {
-      SilentError.debugOrThrow('angular-cli/commands/generate', `Invalid blueprint: ${rawArgs[0]}`);
+      SilentError.debugOrThrow('api-cli/commands/generate', `Invalid blueprint: ${rawArgs[0]}`);
     }
 
     if (!rawArgs[1]) {
-      SilentError.debugOrThrow('angular-cli/commands/generate',
-        `The \`ng generate ${rawArgs[0]}\` command requires a name to be specified.`);
+      SilentError.debugOrThrow('api-cli/commands/generate',
+        `The \`api generate ${rawArgs[0]}\` command requires a name to be specified.`);
     }
 
     // Override default help to hide ember blueprints

@@ -8,11 +8,14 @@ const getFiles = Blueprint.prototype.files;
 const stringUtils = require('ember-cli-string-utils');
 const astUtils = require('../../utilities/ast-utils');
 const NodeHost = require('@api-cli/ast-tools').NodeHost;
+const schema_1 = require('./schema');
 
 module.exports = {
   description: '',
 
   availableOptions: [
+    { name: 'schemapath', type: String, default: null },
+    { name: 'schema', type: String, default: null },
     { name: 'flat', type: Boolean, default: false },
     { name: 'inline-template', type: Boolean, aliases: ['it'] },
     { name: 'inline-style', type: Boolean, aliases: ['is'] },
@@ -27,25 +30,28 @@ module.exports = {
 
   beforeInstall: function(options) {
 
-    if (options.module) {
-      // Resolve path to module
-      const modulePath = options.module.endsWith('.ts') ? options.module : `${options.module}.ts`;
-      const parsedPath = dynamicPathParser(this.project, modulePath);
-      this.pathToModule = path.join(this.project.root, parsedPath.dir, parsedPath.base);
-      if (!fs.existsSync(this.pathToModule)) {
-        throw 'Module specified does not exist';
+    if(options.schemapath) {
+      let schema = this.readFile(options.schemapath)
+      if(!schema) {
+        throw new Error("Error: Schema filepath invalid");
       }
-    } else {
-      try {
-        this.pathToModule = findParentModule(this.project, this.dynamicPath.dir);
-        console.log('pathToModule = ' + this.pathToModule);
-      } catch(e) {
-        if (!options.skipImport) {
-          throw `Error locating module for declaration\n\t${e}`;
-        }
+      this.schema = schema;
+      let error = schema_1.SchemaUtil.isValidJson(schema);
+      if(error){
+        console.error("Error: JSON schema invalid");
+        throw error;
       }
+    } else if (options.schema) {
+      let error = schema_1.SchemaUtil.isValidJson(options.schema);
+      if(error){
+        console.error("Error: JSON schema invalid");
+        throw error;
+      }
+      this.schema = options.schema;
     }
+
   },
+  schema: '',
 
   normalizeEntityName: function (entityName) {
     var parsedPath = dynamicPathParser(this.project, entityName);
@@ -64,10 +70,6 @@ module.exports = {
 
     this.selector = stringUtils.dasherize(prefix + parsedPath.name);
 
-    if (this.selector.indexOf('-') === -1) {
-      this._writeStatusToUI(chalk.yellow, 'WARNING', 'selectors should contain a dash');
-    }
-
     return parsedPath.name;
   },
 
@@ -78,6 +80,14 @@ module.exports = {
         this.project.ngConfig.defaults.styleExt) {
       this.styleExt = this.project.ngConfig.defaults.styleExt;
     }
+
+    options.schema = options.schema !== undefined ? 
+      options.schema :
+      this.project.ngConfigObj.get('defaults.schema');
+
+    options.schemapath = options.schemapath !== undefined ? 
+      options.schemapath :
+      this.project.ngConfigObj.get('defaults.schemapath');
 
     options.inlineStyle = options.inlineStyle !== undefined ?
       options.inlineStyle :
@@ -109,6 +119,8 @@ module.exports = {
       isAppComponent: !!options.isAppComponent,
       selector: this.selector,
       styleExt: this.styleExt,
+      schema: options.schema,
+      schemapath: options.schemapath,
       viewEncapsulation: options.viewEncapsulation,
       changeDetection: options.changeDetection
     };
@@ -163,6 +175,20 @@ module.exports = {
     fs.writeFileSync(filepath, newValue, 'utf-8');
   },
 
+  findReplaceFile(filepath, entryRegex, entryText) {
+    var data = fs.readFileSync(filepath, 'utf-8');
+    var newValue = data.replace(entryRegex, entryText);
+    fs.writeFileSync(filepath, newValue, 'utf-8');
+  },
+
+  readFile(filepath) {
+    let data = null; 
+    try {
+      data = fs.readFileSync(filepath, 'utf-8');
+    } catch (err) { }
+    return data;
+  },
+
   afterInstall: function(options) {
     if (options.dryRun) {
       return;
@@ -172,6 +198,11 @@ module.exports = {
     const className = stringUtils.classify(options.entity.name);
     const fileName = stringUtils.dasherize(options.entity.name);
     const name = (options.entity.name);
+
+    let model = options.target + '/src/models/' + name + '.ts';
+    if(this.schema) {
+      this.findReplaceFile(model, "jsonSchema = { }","jsonSchema = " + this.schema);
+    }
 
     let apiDoc = options.target + '/apidoc.json';
     this.readWriteSync(apiDoc, '"paths": { ', '\t\t"/'+name+'": {\r\n\t\t\t"200": { }\r\n\t\t}', '"paths": { }','\t');
@@ -188,25 +219,6 @@ module.exports = {
     this.readWriteSync(apiController,"from '../../dal/context';", "import { "+className+"Controller } from './"+name+"';")
     this.readWriteSync(apiController,"class Controllers {","\tpublic "+className+": "+className+"Controller;")
     this.readWriteSync(apiController,"constructor(context:IDataContext) {","\t\tthis."+className+" = new "+className+"Controller(context);")
-
-
-    if (!options.skipImport) {
-      const componentDir = path.relative(path.dirname(this.pathToModule), this.generatePath);
-      const importPath = componentDir ? `./${componentDir}/${fileName}` : `./${fileName}`;
-
-    
-      returns.push(
-        astUtils.addDeclarationToModule(this.pathToModule, className, importPath)
-          .then(change => change.apply(NodeHost))
-          .then((result) => {
-            if (options.export) {
-              return astUtils.addExportToModule(this.pathToModule, className, importPath)
-                .then(change => change.apply(NodeHost));
-            }
-            return result;
-          }));
-      this._writeStatusToUI(chalk.yellow, 'update', path.relative(this.project.root, this.pathToModule));
-    }
 
     return Promise.all(returns);
   }

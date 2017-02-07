@@ -17,7 +17,7 @@ export let config = () =>  {
     let mongo = {
         url: margv['mongoUrl'] || 'localhost',
         port: margv['mongoPort'] || '27017',
-        collection: margv['mongoCollection'] || 'newsapi'
+        collection: margv['mongoCollection'] || '<%= htmlComponentName.toLowerCase() %>'
     }
     return {
         port: port,
