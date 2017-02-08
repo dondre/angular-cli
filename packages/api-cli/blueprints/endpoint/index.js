@@ -28,22 +28,22 @@ module.exports = {
     { name: 'export', type: Boolean, default: false }
   ],
 
-  beforeInstall: function(options) {
+  beforeInstall: function (options) {
 
-    if(options.schemapath) {
+    if (options.schemapath) {
       let schema = this.readFile(options.schemapath)
-      if(!schema) {
+      if (!schema) {
         throw new Error("Error: Schema filepath invalid");
       }
       this.schema = schema;
-      let error = schema_1.SchemaUtil.isValidJson(schema);
-      if(error){
+      let error = schema_1.SchemaUtil.isValidJson(this.formatJSON(schema, null, true));
+      if (error) {
         console.error("Error: JSON schema invalid");
         throw error;
       }
     } else if (options.schema) {
       let error = schema_1.SchemaUtil.isValidJson(options.schema);
-      if(error){
+      if (error) {
         console.error("Error: JSON schema invalid");
         throw error;
       }
@@ -60,8 +60,8 @@ module.exports = {
 
     var defaultPrefix = '';
     if (this.project.ngConfig &&
-        this.project.ngConfig.apps[0] &&
-        this.project.ngConfig.apps[0].prefix) {
+      this.project.ngConfig.apps[0] &&
+      this.project.ngConfig.apps[0].prefix) {
       defaultPrefix = this.project.ngConfig.apps[0].prefix;
     }
 
@@ -76,16 +76,16 @@ module.exports = {
   locals: function (options) {
     this.styleExt = 'css';
     if (this.project.ngConfig &&
-        this.project.ngConfig.defaults &&
-        this.project.ngConfig.defaults.styleExt) {
+      this.project.ngConfig.defaults &&
+      this.project.ngConfig.defaults.styleExt) {
       this.styleExt = this.project.ngConfig.defaults.styleExt;
     }
 
-    options.schema = options.schema !== undefined ? 
+    options.schema = options.schema !== undefined ?
       options.schema :
       this.project.ngConfigObj.get('defaults.schema');
 
-    options.schemapath = options.schemapath !== undefined ? 
+    options.schemapath = options.schemapath !== undefined ?
       options.schemapath :
       this.project.ngConfigObj.get('defaults.schemapath');
 
@@ -126,19 +126,8 @@ module.exports = {
     };
   },
 
-  files: function() {
+  files: function () {
     var fileList = getFiles.call(this);
-
-    // if (this.options && this.options.inlineTemplate) {
-    //   fileList = fileList.filter(p => p.indexOf('.html') < 0);
-    // }
-    // if (this.options && this.options.inlineStyle) {
-    //   fileList = fileList.filter(p => p.indexOf('.__styleext__') < 0);
-    // }
-    // if (this.options && !this.options.spec) {
-    //   fileList = fileList.filter(p => p.indexOf('__name__.component.spec.ts') < 0);
-    // }
-
     return fileList;
   },
 
@@ -166,11 +155,16 @@ module.exports = {
     var addReturn = '';
     var backTabs = ''
     var data = fs.readFileSync(filepath, 'utf-8');
-    if(commaTest) {
+    if (commaTest) {
       addComma = data.indexOf(commaTest) > -1 ? '' : ',';
+      if (!addComma) {
+        let replaceText = commaTest.replace('{ }', '{}')
+        data = data.replace(commaTest, replaceText)
+      }
       addReturn = addComma ? '' : '\r\n';
       backTabs = tabs;
     }
+
     var newValue = data.replace(entryRegex, entryRegex + '\r\n' + entryText + addComma + addReturn + backTabs);
     fs.writeFileSync(filepath, newValue, 'utf-8');
   },
@@ -182,14 +176,30 @@ module.exports = {
   },
 
   readFile(filepath) {
-    let data = null; 
+    let data = null;
     try {
       data = fs.readFileSync(filepath, 'utf-8');
     } catch (err) { }
     return data;
   },
 
-  afterInstall: function(options) {
+  formatJSON(json, tabs, noquote) {
+    if (!tabs) tabs = '\t';
+    if (!noquote) noquote = false;
+    let result;
+    if (json.startsWith('{')) {
+      var obj = eval('(' + json + ')');
+      result = JSON.stringify(obj, null, tabs);
+      if (noquote) {
+        result = result.replace(/(['"])?([a-zA-Z0-9_\$]+)(['"])?\s*:/g, "$2:");
+      }
+    } else {
+      throw new Error("Security execution: invalid schema.")
+    }
+    return result;
+  },
+
+  afterInstall: function (options) {
     if (options.dryRun) {
       return;
     }
@@ -200,25 +210,32 @@ module.exports = {
     const name = (options.entity.name);
 
     let model = options.target + '/src/models/' + name + '.ts';
-    if(this.schema) {
-      this.findReplaceFile(model, "jsonSchema = { }","jsonSchema = " + this.schema);
+    if (this.schema) {
+      this.findReplaceFile(model, "jsonSchema = { }", "jsonSchema = " + this.formatJSON(this.schema, null, true));
+      let apiDoc = options.target + '/apidoc.json';
+      let pathData = this.readFile(__filename.replace('index.js', 'paths.txt'));
+      if (pathData) {
+        pathData = pathData.replace(/__name__/g, name);
+        pathData = pathData.replace(/__className__/g, className);
+        this.readWriteSync(apiDoc, '"paths": {', '\t\t' + pathData, '"paths": {}', '\t');
+      }
+      this.readWriteSync(apiDoc, '"definitions": {', '\t\t"' + className + '":\r\n\t\t' + this.formatJSON(this.schema, '\t'), '"definitions": {}', '\t');
     }
 
-    let apiDoc = options.target + '/apidoc.json';
-    this.readWriteSync(apiDoc, '"paths": { ', '\t\t"/'+name+'": {\r\n\t\t\t"200": { }\r\n\t\t}', '"paths": { }','\t');
+
     let context = options.target + '/src/dal/context/index.ts';
-    this.readWriteSync(context, "from './mongo';", "import { I"+ className + " } from '../../models/" + name + "';");
-    this.readWriteSync(context, "export interface IDataContext { ", "\t"+name +"s: IRepository<I"+className+">", 'IDataContext { }','');
+    this.readWriteSync(context, "from './mongo';", "import { I" + className + " } from '../../models/" + name + "';");
+    this.readWriteSync(context, "export interface IDataContext {", "\t" + name + "s: IRepository<I" + className + ">", 'IDataContext { }', '');
     let mongoContext = options.target + '/src/dal/context/mongo.ts';
-    this.readWriteSync(mongoContext, "from '../connection/mongo';","import { "+name+"Repository } from '../../models/"+name+"';");
-    this.readWriteSync(mongoContext, 'dbContext = { ','\t\t\t\t'+name+'s: '+ name+'Repository(dbSettings)','let dbContext = { };','\t\t\t');
+    this.readWriteSync(mongoContext, "from '../connection/mongo';", "import { " + name + "Repository } from '../../models/" + name + "';");
+    this.readWriteSync(mongoContext, 'dbContext = {', '\t\t\t\t' + name + 's: ' + name + 'Repository(dbSettings)', 'let dbContext = { };', '\t\t\t');
     let apiRoute = options.target + '/src/api/routes/index.ts';
-    this.readWriteSync(apiRoute,"from '../../dal/context';","import { "+name+"Routes } from './"+name+"';")
-    this.readWriteSync(apiRoute,"init: (app, context:IDataContext) => { ","\t\t\t"+name+"Routes(app, context)", "(app, context:IDataContext) => { }",'\t\t')
+    this.readWriteSync(apiRoute, "from '../../dal/context';", "import {" + name + "Routes } from './" + name + "';")
+    this.readWriteSync(apiRoute, "init: (app, context:IDataContext) => {", "\t\t\t" + name + "Routes(app, context)", "(app, context:IDataContext) => { }", '\t\t')
     let apiController = options.target + '/src/api/controllers/index.ts';
-    this.readWriteSync(apiController,"from '../../dal/context';", "import { "+className+"Controller } from './"+name+"';")
-    this.readWriteSync(apiController,"class Controllers {","\tpublic "+className+": "+className+"Controller;")
-    this.readWriteSync(apiController,"constructor(context:IDataContext) {","\t\tthis."+className+" = new "+className+"Controller(context);")
+    this.readWriteSync(apiController, "from '../../dal/context';", "import { " + className + "Controller } from './" + name + "';")
+    this.readWriteSync(apiController, "class Controllers {", "\tpublic " + className + ": " + className + "Controller;")
+    this.readWriteSync(apiController, "constructor(context:IDataContext) {", "\t\tthis." + className + " = new " + className + "Controller(context);")
 
     return Promise.all(returns);
   }

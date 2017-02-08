@@ -3,14 +3,14 @@
     "info": {
         "description": "<%= htmlComponentName %>'s API server",
         "version": "1.0.0",
-        "title": "Swagger <%= htmlComponentName %>"
+        "title": "OpenAPI documentation for <%= htmlComponentName %>"
     },
     "host": "localhost:6100",
-    "basePath": "/v1",
+    "basePath": "",
     "schemes": [
         "http"
     ],
-    "paths": { },
+    "paths": {},
     "securityDefinitions": {
         "api_key": {
             "type": "apiKey",
@@ -21,6 +21,5 @@
             "type": "basic"
         }
     },
-    "definitions": {
-    }
+    "definitions": {}
 }
