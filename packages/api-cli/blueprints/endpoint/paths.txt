@@ -1,4 +1,4 @@
-"/__name__": {
+"/__name__s": {
             "get": {
                 "tags": [ "__name__" ],
                 "summary": "Get all __name__s",
