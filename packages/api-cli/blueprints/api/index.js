@@ -1,7 +1,8 @@
-const Blueprint   = require('../../ember-cli/lib/models/blueprint');
-const path        = require('path');
+const Blueprint = require('../../ember-cli/lib/models/blueprint');
+const path = require('path');
 const stringUtils = require('ember-cli-string-utils');
 const getFiles = Blueprint.prototype.files;
+const fs = require('fs');
 
 module.exports = {
   description: '',
@@ -16,13 +17,13 @@ module.exports = {
     // { name: 'skip-git', type: Boolean, default: false, aliases: ['sg'] }
   ],
 
-  beforeInstall: function(options) {
+  beforeInstall: function (options) {
     if (options.ignoredUpdateFiles && options.ignoredUpdateFiles.length > 0) {
       return Blueprint.ignoredUpdateFiles = Blueprint.ignoredUpdateFiles.concat(options.ignoredUpdateFiles);
     }
   },
 
-  locals: function(options) {
+  locals: function (options) {
     this.styleExt = options.style;
     this.version = require(path.resolve(__dirname, '../../package.json')).version;
     // set this.tests to opposite of skipTest options, meaning if tests are being skipped then the default.spec.BLUEPRINT will be false
@@ -50,27 +51,16 @@ module.exports = {
     };
   },
 
-  files: function() {
+  files: function () {
     var fileList = getFiles.call(this);
-
-    // if (this.options && !this.options.routing) {
-    //   fileList = fileList.filter(p => p.indexOf('app-routing.module.ts') < 0);
-    // }
-    // if (this.options && this.options.inlineTemplate) {
-    //   fileList = fileList.filter(p => p.indexOf('app.component.html') < 0);
-    // }
-    // if (this.options && this.options.inlineStyle) {
-    //   fileList = fileList.filter(p => p.indexOf('app.component.__styleext__') < 0);
-    // }
-    // if (this.options && this.options.skipGit) {
-    //   fileList = fileList.filter(p => p.indexOf('gitignore') < 0);
-    // }
-
-    // if (this.options && this.options.skipTests) {
-    //   fileList = fileList.filter(p => p.indexOf('app.component.spec.ts') < 0);
-    // }
-
     return fileList;
+  },
+
+  afterInstall: function (options) {
+    console.log('After these messages');
+    fs.renameSync(path.resolve(options.target, 'vscode'), path.resolve(options.target, '.vscode'));
+    const returns = [];
+    return Promise.all(returns);
   },
 
   fileMapTokens: function (options) {

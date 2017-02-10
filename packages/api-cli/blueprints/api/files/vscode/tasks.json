@@ -1,0 +1,12 @@
+{
+    "version": "0.1.0",
+    "tasks": [
+        {
+            "taskName": "buildTs",
+            "command": "tsc",
+            "isBuildCommand": true,
+            "promptOnClose": true,
+            "showOutput": "always"
+        }
+    ]
+}
