@@ -1,14 +1,17 @@
 import { IRepository } from './';
 import { Mongoose, Document, Model } from 'mongoose';
+import { config } from '../../config';
 
 let mongoose = new Mongoose();
 
 export class MongoRepository<Document> implements IRepository<Document> {
 
     private _model;
+    private cacheTimeout: number;
 
-    constructor(schemaModel) {
+    constructor(schemaModel, private redis) {
         this._model = schemaModel;
+        this.cacheTimeout = config().cache.dbTimeout;
     }
 
     delete(id: string): Promise<Boolean> {
@@ -21,10 +24,10 @@ export class MongoRepository<Document> implements IRepository<Document> {
 
     findById(id: string): Promise<{}> {
         return new Promise(async (resolve, reject) => {
-            this._model.find({_id: id})
+            this._model.find({ _id: id })
                 .exec()
                 .onResolve((err, doc) => {
-                    this.hasError(err) ? reject(err) :  resolve(this.getDocument(doc))
+                    this.hasError(err) ? reject(err) : resolve(this.getDocument(doc))
                 });
         })
     }
@@ -51,29 +54,29 @@ export class MongoRepository<Document> implements IRepository<Document> {
 
     getAll(): Promise<[{}]> {
         return new Promise(async (resolve, reject) => {
-                this._model.find(x => x != undefined)
-                    .exec()
-                    .onResolve((err, doc) => {
-                        this.hasError(err) ? reject(err) : resolve(this.getDocument(doc));
-                    });
+            this._model.find(x => x != undefined)
+                .exec()
+                .onResolve((err, doc) => {
+                    this.hasError(err) ? reject(err) : resolve(this.getDocument(doc));
+                });
         });
     }
     find(json: {}): Promise<[{}]> {
         return new Promise(async (resolve, reject) => {
-                this._model.find(json)
-                    .exec()
-                    .onResolve((err, doc) => {
-                        this.hasError(err) ? reject(err) : resolve(this.getDocument(doc));
-                    });
+            this._model.find(json)
+                .exec()
+                .onResolve((err, doc) => {
+                    this.hasError(err) ? reject(err) : resolve(this.getDocument(doc));
+                });
         });
     };
     findOne(json: {}): Promise<{}> {
         return new Promise(async (resolve, reject) => {
-                this._model.findOne(json)
-                    .exec()
-                    .onResolve((err, doc) => {
-                        this.hasError(err) ? reject(err) : resolve(this.getDocument(doc));
-                    });
+            this._model.findOne(json)
+                .exec()
+                .onResolve((err, doc) => {
+                    this.hasError(err) ? reject(err) : resolve(this.getDocument(doc));
+                });
         });
     };
     save(doc: Document): Promise<{}> {
@@ -84,22 +87,22 @@ export class MongoRepository<Document> implements IRepository<Document> {
         });
     }
 
-    private getDocument(doc:any){
+    private getDocument(doc: any) {
         let result;
-        if(doc.length) {
+        if (doc.length) {
             result = [];
             let hasDoc = doc[0].hasOwnProperty('_doc');
-            doc.forEach(d=> { hasDoc ? result.push(d._doc): result.push(d); })
+            doc.forEach(d => { hasDoc ? result.push(d._doc) : result.push(d); })
         } else {
             result = doc.hasOwnProperty('_doc') ? doc._doc : doc;
         }
         return result;
     }
 
-    private hasError(err:any): Boolean {
+    private hasError(err: any): Boolean {
         let result = false;
-        if(err){
-            console.error('Mongo: '+ JSON.stringify(err));
+        if (err) {
+            console.error('Mongo: ' + JSON.stringify(err));
             result = true;
         }
         return result;

@@ -3,8 +3,8 @@
   "dependencies": {
     "ajv": "registry:npm/ajv#3.5.0+20160208185606",
     "minimist": "registry:npm/minimist#1.0.0+20160723033700",
-    "mongoose": "registry:npm/mongoose#4.3.5+20160628072220"
+    "mongoose": "registry:npm/mongoose#4.3.5+20160628072220",
+    "redis": "registry:npm/redis#2.6.0+20160901110043"
   },
-  "globalDependencies": {
-  }
+  "globalDependencies": {}
 }

@@ -1,6 +1,6 @@
 import { Routes } from './routes';
 import { IDataContext } from '../dal/context';
-import { Log } from '../lib/log'; 
+import { Log } from '../lib/log';
 
 let express = require('express');
 let bodyParser = require('body-parser')
@@ -10,21 +10,21 @@ let apiDoc = require('../../apidoc.json');
 
 export class API {
 
-    constructor(port:number, context:IDataContext){
+    constructor(port: number, context: IDataContext, cache) {
         this.initMiddleware();
         this.initOpenAPI();
-        Routes.init(app, context);
-        app.listen(port, ()=> { 
-            Log.write('API listening on port: ' + port); 
+        Routes.init(app, context, cache);
+        app.listen(port, () => {
+            Log.write('API listening on port: ' + port);
         })
     }
 
-    initMiddleware(){
+    initMiddleware() {
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({ extended: true }));
     }
 
-    initOpenAPI(){
+    initOpenAPI() {
         app.use('/api-docs', openUI.serve, openUI.setup(apiDoc));
     }
 

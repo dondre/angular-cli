@@ -1,5 +1,5 @@
 {
-  "name": "<%= htmlComponentName %>",
+  "name": "__projectname__",
   "version": "0.0.0",
   "scripts": {
     "init": "npm install && typings install && tsc",
@@ -19,6 +19,7 @@
     "minimist": "^1.2.0",
     "mongoose": "^4.7.7",
     "require": "^2.4.20",
+    "redis": "^2.6.5",
     "swagger-ui-express": "^1.0.3",
     "ts-helpers": "^1.1.1"
   },
@@ -35,7 +36,7 @@
     "rxjs": "^5.1.0",
     "ts-node": "1.2.1",
     "tslint": "^4.3.0",
-    "typescript": "~2.0.3",
+    "typescript": "^2.0.10",
     "zone.js": "^0.7.6"
   }
 }
