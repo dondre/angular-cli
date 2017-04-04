@@ -231,7 +231,7 @@ module.exports = {
     this.readWriteSync(mongoContext, 'dbContext = {', '\t\t\t\t' + name + 's: ' + name + 'Repository(dbSettings, cache)', 'let dbContext = { };', '\t\t\t');
     let apiRoute = options.target + '/src/api/routes/index.ts';
     this.readWriteSync(apiRoute, "from '../../dal/context';", "import {" + name + "Routes } from './" + name + "';")
-    this.readWriteSync(apiRoute, "init: (app, context: IDataContext) => {", "\t\t\t" + name + "Routes(app, context)", "(app, context:IDataContext) => { }", '\t\t')
+    this.readWriteSync(apiRoute, "init: (app, context: IDataContext) => {", "\t\t\t" + name + "Routes(app, context);", "(app, context: IDataContext) => { }", '\t\t')
     let apiController = options.target + '/src/api/controllers/index.ts';
     this.readWriteSync(apiController, "from '../../dal/context';", "import { " + className + "Controller } from './" + name + "';")
     this.readWriteSync(apiController, "class Controllers {", "\tpublic " + className + ": " + className + "Controller;")
