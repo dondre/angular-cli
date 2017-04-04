@@ -89,10 +89,11 @@ export class MongoRepository<Document> implements IRepository<Document> {
 
     private getDocument(doc: any) {
         let result;
-        if (doc.length) {
+        if (Array.isArray(doc)) {
             result = [];
-            let hasDoc = doc[0].hasOwnProperty('_doc');
-            doc.forEach(d => { hasDoc ? result.push(d._doc) : result.push(d); })
+            if(doc.length) {
+                doc.forEach(d => { d.hasOwnProperty('_doc') ? result.push(d._doc) : result.push(d); })
+            }
         } else {
             result = doc.hasOwnProperty('_doc') ? doc._doc : doc;
         }
