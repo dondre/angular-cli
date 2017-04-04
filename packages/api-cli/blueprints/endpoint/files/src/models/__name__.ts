@@ -14,8 +14,8 @@ export const <%= classifiedModuleName %> = (config:IMongoSettings) => {
 }
 
 class <%= classifiedModuleName %>Repository extends MongoRepository<any> {
-    constructor(config:IMongoSettings) {
-        super(<%= classifiedModuleName %>(config));
+    constructor(config:IMongoSettings, cache) {
+        super(<%= classifiedModuleName %>(config), cache);
     }
 }
 
@@ -25,4 +25,4 @@ export let validate = (req, res, next) => {
     next();
 }
 
-export let <%= classifiedModuleName.toLowerCase() %>Repository = (config:IMongoSettings) => { return new <%= classifiedModuleName %>Repository(config); }
+export let <%= classifiedModuleName.toLowerCase() %>Repository = (config:IMongoSettings, cache) => { return new <%= classifiedModuleName %>Repository(config, cache); }

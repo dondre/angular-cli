@@ -8,5 +8,5 @@ import { MongoContextFactory } from './dal/context/mongo';
     let settings = config();
     let cache = new Redis(settings.redis);
     let context = await getContext(settings, cache);
-    let api = new API(settings.port, context, cache);
+    let api = new API(settings.port, context);
 })();
