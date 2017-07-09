@@ -57,7 +57,7 @@ module.exports = {
   },
 
   afterInstall: function (options) {
-    console.log('After these messages');
+    //console.log('After these messages');
     fs.renameSync(path.resolve(options.target, 'vscode'), path.resolve(options.target, '.vscode'));
     const returns = [];
     return Promise.all(returns);

@@ -22,7 +22,7 @@ export class MongoRepository<Document> implements IRepository<Document> {
         });
     }
 
-    findById(id: string): Promise<{}> {
+    findById<Document>(id: string): Promise<Document> {
         return new Promise(async (resolve, reject) => {
             this._model.find({ _id: id })
                 .exec()
@@ -35,7 +35,6 @@ export class MongoRepository<Document> implements IRepository<Document> {
     update(id: string, doc: {}): Promise<Boolean> {
         return new Promise((resolve, reject) => {
             var document: any = doc;
-            //doc['_id'] = undefined; 
             this._model.update({ _id: id }, document, { upsert: true }, (err, rows, raw) => {
                 this.hasError(err) ? reject(err) : resolve(rows);
             });
@@ -45,14 +44,13 @@ export class MongoRepository<Document> implements IRepository<Document> {
     patch(id: string, doc: {}): Promise<Boolean> {
         return new Promise((resolve, reject) => {
             var document: any = doc;
-            //doc['_id'] = undefined; 
             this._model.update({ _id: id }, { $set: document }, (err, rows, raw) => {
                 this.hasError(err) ? reject(err) : resolve(rows);
             });
         });
     }
 
-    getAll(): Promise<[{}]> {
+    getAll<Document>(): Promise<[Document]> {
         return new Promise(async (resolve, reject) => {
             this._model.find(x => x != undefined)
                 .exec()
@@ -61,7 +59,7 @@ export class MongoRepository<Document> implements IRepository<Document> {
                 });
         });
     }
-    find(json: {}): Promise<[{}]> {
+    find<Document>(json: {}): Promise<[Document]> {
         return new Promise(async (resolve, reject) => {
             this._model.find(json)
                 .exec()
@@ -70,7 +68,7 @@ export class MongoRepository<Document> implements IRepository<Document> {
                 });
         });
     };
-    findOne(json: {}): Promise<{}> {
+    findOne<Document>(json: {}): Promise<Document> {
         return new Promise(async (resolve, reject) => {
             this._model.findOne(json)
                 .exec()

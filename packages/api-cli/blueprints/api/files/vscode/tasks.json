@@ -1,12 +1,8 @@
 {
     "version": "0.1.0",
-    "tasks": [
-        {
-            "taskName": "buildTs",
-            "command": "tsc",
-            "isBuildCommand": true,
-            "promptOnClose": true,
-            "showOutput": "always"
-        }
-    ]
+    "command": "tsc",
+    "isShellCommand": true,
+    "args": ["-p", "."],
+    "showOutput": "silent",
+    "problemMatcher": "$tsc"
 }
