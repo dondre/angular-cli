@@ -31,7 +31,7 @@ module.exports = {
   beforeInstall: function (options) {
 
     if (options.schemapath) {
-      let schema = this.readFile(options.schemapath)
+      let schema = this.readFile(path.join(options.target,options.schemapath))
       if (!schema) {
         throw new Error("Error: Schema filepath invalid");
       }
